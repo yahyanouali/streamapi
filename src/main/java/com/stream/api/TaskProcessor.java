@@ -19,17 +19,22 @@ public class TaskProcessor {
     public Multi<String> scheduleTasks(List<Task> tasks) {
         List<Task> scheduledTasks = taskScheduler.introduceTaskDelays(tasks);
 
-        return Multi.createFrom().iterable(scheduledTasks)
-                .onItem().transformToUniAndConcatenate(this::processScheduledTask);
+        return Multi.createFrom()
+                .iterable(scheduledTasks)
+                .onItem()
+                    .transformToUniAndConcatenate(this::processScheduledTask);
     }
 
     private Uni<String> processScheduledTask(Task task) {
         String message = String.format("Task %s is WIP for %d seconds (delayed by %d seconds)",
                 task.getId(), task.getDuration(), task.getDelay());
 
-        return Uni.createFrom().item(message)
-                .onItem().delayIt().by(Duration.ofSeconds(task.getDelay()))
-                .invoke(log::info)
-                .invoke(() -> taskScheduler.prepareForHelpIfNeeded(task));
+        return Uni.createFrom()
+                .item(message)
+                .onItem()
+                    .delayIt()
+                    .by(Duration.ofSeconds(task.getDelay()))
+                    .invoke(log::info)
+                    .invoke(() -> taskScheduler.prepareForHelpIfNeeded(task));
     }
 }
