@@ -26,7 +26,7 @@ public class TaskProcessor {
     }
 
     private Uni<String> processScheduledTask(Task task) {
-        String message = String.format("Task %s is WIP for %d seconds (delayed by %d seconds)",
+        String message = String.format("Task %s is in progress for %d seconds (delayed by %d seconds)",
                 task.getId(), task.getDuration(), task.getDelay());
 
         return Uni.createFrom()
